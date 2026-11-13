@@ -26,7 +26,7 @@ Step A（ゲームCLI）の finish が出した `walk_draft.json` を読み、�
     "scene_caption": "絵はがき場面の説明（自分で書く）"
   },
   "illustration_brief": {"scene": "Step C で描く場面イラストの指示"},
-  "credit": {"form": "Special Thanks", "text": "Special Thanks: ...", "production": "制作: ..."}
+  "credit": {"production": "制作: 自分の名前"}（任意。自分の制作名だけを書く。Special Thanks は入れない——それは作者自身の絵はがきのためのもの）
 }
 ```
 
