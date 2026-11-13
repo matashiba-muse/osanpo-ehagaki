@@ -109,12 +109,16 @@ def main():
     ch = pc["challenge"]
     d.text((44, 852), f"お題「{ch['theme']}」 seed {ch['seed']} ／ log {pc['verification']['log_hash']}",
            font=font(16), fill=SUB)
-    prod = pc["credit"]["production"]
-    d.text((W - 44 - d.textlength(prod, font=font(15)), 852), prod, font=font(15), fill=SUB)
-    credit = "Special Thanks: " + pc["credit"]["text"].replace("Special Thanks: ", "")
-    cy = 878
-    for ln in wrap(d, credit, font(13), W - 88):
-        d.text((44, cy), ln, font=font(13), fill=SUB); cy += 19
+    credit = pc.get("credit") or {}
+    prod = credit.get("production")
+    if prod:
+        d.text((W - 44 - d.textlength(prod, font=font(15)), 852), prod, font=font(15), fill=SUB)
+    thanks = credit.get("text")
+    if thanks:  # Special Thanks は任意（作者自身の絵はがき用）。無ければ描かない
+        line = "Special Thanks: " + thanks.replace("Special Thanks: ", "")
+        cy = 878
+        for ln in wrap(d, line, font(13), W - 88):
+            d.text((44, cy), ln, font=font(13), fill=SUB); cy += 19
 
     out_path = os.path.join(run_dir, "postcard.png")
     img.save(out_path)
