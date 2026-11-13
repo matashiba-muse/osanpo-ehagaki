@@ -22,31 +22,31 @@ EVENTS = [
     # --- 街角 (town) ---
     {"id": "T01_CAT", "area": "town", "title": "看板猫のいる薬局前", "env": "friendly",
      "situation": "薬局の入口脇の段ボール箱の上で、看板猫が丸くなって昼寝をしている。お客さんが来るたびに片目だけ開けて、また閉じる。箱には手書きで「なでてもいいよ」と書かれていた。",
-     "discovery": "看板猫の写真メモ", "tags": ["猫"],
+     "discovery": "看板猫の写真メモ", "tags": ["猫", "可愛い"],
      "choices": [
          {"key": "A", "axis": "friendly", "label": "そっと撫でさせてもらう", "description": "箱の脇にしゃがんで、指の匂いを嗅いでもらってから撫でる。"},
          {"key": "B", "axis": "curiosity", "label": "手書きの張り紙をじっくり読む", "description": "「なでてもいいよ」の続きに書かれた猫の紹介文を最後まで読む。"}]},
     {"id": "T02_POST", "area": "town", "title": "まるい郵便ポスト", "env": "curiosity",
      "situation": "交差点の角に、背の低いまるい郵便ポストが立っている。投函口の上のプレートは磨かれて光り、横には誰かが貼った季節のシールが一枚。ポストの影が、午後の光で長く伸びていた。",
-     "discovery": "まるいポストのスケッチ", "tags": ["まるい", "光"],
+     "discovery": "まるいポストのスケッチ", "tags": ["まるい", "光", "可愛い"],
      "choices": [
          {"key": "A", "axis": "curiosity", "label": "ぐるっと一周して裏側を見る", "description": "回収時刻の表や古いシールの跡まで、裏側を観察する。"},
          {"key": "B", "axis": "chill", "label": "近くのベンチでしばらく眺める", "description": "ポストと通りを行く人を、急がずぼんやり眺める。"}]},
     {"id": "T03_BAKERY", "area": "town", "title": "パン屋の焼き立ての匂い", "env": "foodie",
      "situation": "通りの向こうから、焼き立ての甘い匂いが流れてくる。パン屋の店先ではトレーが何度も運び込まれ、ガラス越しに湯気の向こうで店員さんが忙しそうに手を動かしていた。",
-     "discovery": "焼き立てメロンパン", "tags": ["いい匂い", "甘い"],
+     "discovery": "焼き立てメロンパン", "tags": ["いい匂い", "甘い", "温かい"],
      "choices": [
          {"key": "A", "axis": "foodie", "label": "焼き立てを1つ買ってその場で頬張る", "description": "一番ほかほかの一番いい匂いのやつを選ぶ。"},
          {"key": "B", "axis": "friendly", "label": "列の前の人に「何がおすすめ？」と聞く", "description": "常連さんらしい人のおすすめを教えてもらう。"}]},
     {"id": "T04_VENDING", "area": "town", "title": "踏切の向こうの赤い自販機", "env": "adventure",
      "situation": "踏切が鳴っている。遮断機の向こう側に、真っ赤な自販機がぽつんと立ってこちらを待っているように見えた。カンカンという音と、遠くの電車の音が重なる。",
-     "discovery": "赤い自販機のラムネ", "tags": ["赤い"],
+     "discovery": "赤い自販機のラムネ", "tags": ["赤い", "冷たい"],
      "choices": [
          {"key": "A", "axis": "adventure", "label": "踏切が開いた瞬間に駆けて渡る", "description": "開いたら一目散。赤い自販機までダッシュ。"},
          {"key": "B", "axis": "curiosity", "label": "電車を眺めてからゆっくり渡る", "description": "通り過ぎる電車の窓を数えながら待つ。"}]},
     {"id": "T05_FLOWER", "area": "town", "title": "花屋の店先の季節の花", "env": "chill",
      "situation": "花屋の店先に、バケツに入った季節の花が並んでいる。水の匂いと花の匂いが混ざって、店の前の空気だけ少し涼しい。店主さんが花の首を持ち上げて、水を替えているところだった。",
-     "discovery": "名前を覚えた季節の花", "tags": ["花"],
+     "discovery": "名前を覚えた季節の花", "tags": ["花", "可愛い", "いい匂い"],
      "choices": [
          {"key": "A", "axis": "chill", "label": "涼しい店先で花をゆっくり選ぶ", "description": "急がず一輪ずつ顔を見て回る。"},
          {"key": "B", "axis": "friendly", "label": "店主さんに花の名前を教えてもらう", "description": "知らない花を指さして名前と季節を聞く。"}]},
@@ -65,26 +65,26 @@ EVENTS = [
          {"key": "B", "axis": "foodie", "label": "一番甘そうなのを真剣に見極める", "description": "匂いと重さと色で、今一番甘い一個を選ぶ。"}]},
     {"id": "A03_GRAFFITI", "area": "alley", "title": "路地の壁の小さなアート", "env": "curiosity",
      "situation": "路地の壁の低いところに、小さな絵が描かれている。通り過ぎる大人は気づかない高さ。猫のような、鳥のような、不思議な生き物が赤い帽子をかぶっていた。",
-     "discovery": "壁の小さい生き物のスケッチ", "tags": ["赤い"],
+     "discovery": "壁の小さい生き物のスケッチ", "tags": ["赤い", "小さい", "可愛い"],
      "choices": [
          {"key": "A", "axis": "curiosity", "label": "しゃがんでじっくり観察する", "description": "描いた人の目線の高さに合わせてしゃがみ込む。"},
          {"key": "B", "axis": "adventure", "label": "この生き物の仲間を探して路地を進む", "description": "他にも描かれていないか、路地の奥まで探しに行く。"}]},
     {"id": "A04_TAIYAKI", "area": "alley", "title": "たい焼き屋の湯気", "env": "foodie",
      "situation": "たい焼き屋の鉄板から、白い湯気がもくもく上がっている。甘い匂いが路地いっぱいに広がって、通りがかりの人がみんな少しだけ足を緩める。焼き上がりを待つ列は3人。",
-     "discovery": "焼きたてたい焼き", "tags": ["甘い", "いい匂い"],
+     "discovery": "焼きたてたい焼き", "tags": ["甘い", "いい匂い", "温かい"],
      "choices": [
          {"key": "A", "axis": "foodie", "label": "列に並んで焼きたてを待つ", "description": "鉄板の音を聞きながら、焼き上がりを待つ。"},
          {"key": "B", "axis": "chill", "label": "湯気を眺めながら手持ちのメモを整理する", "description": "ベンチで少し休んで、今日の発見をメモにまとめる。"}]},
     {"id": "A05_SHRINE", "area": "alley", "title": "迷い込んだ先の小さな神社", "env": "chill",
      "situation": "路地を曲がったら、小さな神社があった。狛犬は少し苔むして、境内の木陰はひんやりしている。絵馬が風でカラコロと小さな音を立てていた。",
-     "discovery": "狛犬の写真メモ", "tags": ["古い"],
+     "discovery": "狛犬の写真メモ", "tags": ["古い", "可愛い", "小さい"],
      "choices": [
          {"key": "A", "axis": "chill", "label": "木陰で深呼吸して休む", "description": "境内の静けさの中で、足を休める。"},
          {"key": "B", "axis": "curiosity", "label": "絵馬を遠くから眺める", "description": "どんな願いがあるのか、字は読まずに雰囲気だけ眺める。"}]},
     # --- 公園・夕方 (evening) ---
     {"id": "E01_FOUNTAIN", "area": "evening", "title": "公園の噴水の小さな虹", "env": "chill",
      "situation": "公園の噴水が午後の光を受けて光っている。水しぶきの向こうに、角度によって見えたり消えたりする小さな虹。子供たちが濡れるギリギリの距離で走り回っている。",
-     "discovery": "噴水の虹の写真メモ", "tags": ["光", "まるい"],
+     "discovery": "噴水の虹の写真メモ", "tags": ["光", "まるい", "冷たい", "小さい"],
      "choices": [
          {"key": "A", "axis": "chill", "label": "虹が見える角度でのんびり眺める", "description": "見えたり消えたりする虹を、腰かけて追う。"},
          {"key": "B", "axis": "curiosity", "label": "虹が一番見える場所を探して回る", "description": "噴水の周りを歩いて、虹のベストポジションを探す。"}]},
@@ -102,13 +102,13 @@ EVENTS = [
          {"key": "B", "axis": "chill", "label": "今いる場所で沈むのを待つ", "description": "動かずに、色が変わっていくのを眺める。"}]},
     {"id": "E04_DAGASHI", "area": "evening", "title": "駄菓子屋の瓶ラムネ", "env": "foodie",
      "situation": "夕方の駄菓子屋は、学校帰りの子で賑わっている。瓶ラムネが冷蔵ケースの中で光って、ビー玉が底で揺れていた。店のおばあちゃんは常連の子の名前を全部覚えている。",
-     "discovery": "瓶ラムネのビー玉", "tags": ["まるい", "光"],
+     "discovery": "瓶ラムネのビー玉", "tags": ["まるい", "光", "冷たい"],
      "choices": [
          {"key": "A", "axis": "foodie", "label": "瓶ラムネを開けて一気に飲む", "description": "シュワッという音と一緒に、夕方の喉を潤す。"},
          {"key": "B", "axis": "curiosity", "label": "ビー玉の仕組みをおばあちゃんに聞く", "description": "なんで落ちないのか、仕組みを教えてもらう。"}]},
     {"id": "E05_WINDOWS", "area": "evening", "title": "帰り道の窓明かり", "env": "chill",
      "situation": "日が落ちて、帰り道の家々に窓明かりが灯り始めた。カーテンの色も明かりの色も家ごとに違って、夕ごはんの匂いがどこかから漂ってくる。歩く速さが自然とゆっくりになる。",
-     "discovery": "窓明かりの並びのメモ", "tags": ["光"],
+     "discovery": "窓明かりの並びのメモ", "tags": ["光", "温かい"],
      "choices": [
          {"key": "A", "axis": "chill", "label": "明かりを数えながらゆっくり歩く", "description": "急がず、今日の散歩の余韻の中で歩く。"},
          {"key": "B", "axis": "friendly", "label": "すれ違う人に「こんばんは」と言う", "description": "夕方の挨拶を交わしながら歩く。"}]},
@@ -116,7 +116,7 @@ EVENTS = [
 
 CAFE = {"id": "F01_CAFE", "area": "cafe", "title": "終点のカフェ「窓際の席」", "env": "friendly",
         "situation": "歩き終えて、カフェの窓際の席に座った。外はもう夕方の色。テーブルの上には今日のメモと、集めた発見の数々。店内には小さな音量で、知っている曲が流れている。",
-        "discovery": "窓際の席の記憶", "tags": ["音楽"],
+        "discovery": "窓際の席の記憶", "tags": ["音楽", "温かい"],
         "choices": [
             {"key": "A", "axis": "foodie", "label": "固めプリンを頼んで今日を締める", "description": "カラメル苦めのプリンで、散歩のご褒美。"},
             {"key": "B", "axis": "friendly", "label": "店内の曲を小さく口ずさむ", "description": "誰にも聞こえないくらいの声で、メロディに乗る。"}]}
@@ -124,22 +124,22 @@ CAFE = {"id": "F01_CAFE", "area": "cafe", "title": "終点のカフェ「窓際�
 # とっておき選択肢（C）: その軸が4以上あるプレイヤーにだけ見える第3の選択肢。
 # DC+2 の挑戦で、成功すると通常とは別の「レア発見」が手に入る。個性が"選べる行動の幅"に直結する仕組み。
 RARES = {
-    "T01_CAT": {"axis": "friendly", "label": "箱の横で一緒に丸くなってみる", "description": "看板猫の隣に座って、同じポーズで丸くなる。", "discovery": "看板猫とお揃いの昼寝メモ", "tags": ["猫"]},
-    "T02_POST": {"axis": "curiosity", "label": "未来の自分宛てに手紙を出す", "description": "持っていた便箋に短く書いて、このポストから投函する。", "discovery": "未来の自分への手紙の控え", "tags": ["まるい", "光"]},
-    "T03_BAKERY": {"axis": "foodie", "label": "一番人気を聞いて2種類食べ比べる", "description": "店員さんに一番人気を聞いて、メロンパンと両方買う。", "discovery": "焼き立て2種の食べ比べメモ", "tags": ["いい匂い", "甘い"]},
+    "T01_CAT": {"axis": "friendly", "label": "箱の横で一緒に丸くなってみる", "description": "看板猫の隣に座って、同じポーズで丸くなる。", "discovery": "看板猫とお揃いの昼寝メモ", "tags": ["猫", "可愛い"]},
+    "T02_POST": {"axis": "curiosity", "label": "未来の自分宛てに手紙を出す", "description": "持っていた便箋に短く書いて、このポストから投函する。", "discovery": "未来の自分への手紙の控え", "tags": ["まるい", "光", "可愛い"]},
+    "T03_BAKERY": {"axis": "foodie", "label": "一番人気を聞いて2種類食べ比べる", "description": "店員さんに一番人気を聞いて、メロンパンと両方買う。", "discovery": "焼き立て2種の食べ比べメモ", "tags": ["いい匂い", "甘い", "温かい"]},
     "T04_VENDING": {"axis": "adventure", "label": "踏切の音に合わせて踊る", "description": "カンカンという音をリズムに、その場で小さく踊る。", "discovery": "踏切リズムの譜面メモ", "tags": ["赤い", "音楽"]},
-    "T05_FLOWER": {"axis": "chill", "label": "一輪だけ買って帰る", "description": "一番好きな顔の一輪を選んで連れて帰る。", "discovery": "連れて帰った一輪の花", "tags": ["花"]},
+    "T05_FLOWER": {"axis": "chill", "label": "一輪だけ買って帰る", "description": "一番好きな顔の一輪を選んで連れて帰る。", "discovery": "連れて帰った一輪の花", "tags": ["花", "可愛い", "いい匂い"]},
     "A01_KISSATEN": {"axis": "curiosity", "label": "常連さんの話を聞かせてもらう", "description": "ドアを開けて入り、常連さんらしい人に店の昔話を聞く。", "discovery": "常連さん直伝の裏メニューメモ", "tags": ["古い"]},
     "A02_GREENGROCER": {"axis": "foodie", "label": "店主と目利き勝負をする", "description": "一番甘い一個を店主と同時に指さして勝負する。", "discovery": "店主公認・目利きの証シール", "tags": ["甘い"]},
-    "A03_GRAFFITI": {"axis": "adventure", "label": "描いた人を探して路地を回る", "description": "絵のタッチを手がかりに、作者の気配を追う。", "discovery": "作者のサイン入り小石", "tags": ["赤い"]},
-    "A04_TAIYAKI": {"axis": "foodie", "label": "頭から尾まで食べ方を真剣に決める", "description": "焼きたてを手に、最初の一口の場所を真剣に悩む。", "discovery": "たい焼き占いの結果メモ", "tags": ["甘い", "いい匂い"]},
-    "A05_SHRINE": {"axis": "chill", "label": "狛犬の前で目を閉じて座る", "description": "木陰でしばらく目を閉じて、境内の音だけ聞く。", "discovery": "境内の音の録音メモ", "tags": ["古い"]},
-    "E01_FOUNTAIN": {"axis": "curiosity", "label": "虹の根元を探しに近づく", "description": "濡れる覚悟で、虹が立っている場所へ近づく。", "discovery": "虹の根元の水しぶき写真", "tags": ["光", "まるい"]},
+    "A03_GRAFFITI": {"axis": "adventure", "label": "描いた人を探して路地を回る", "description": "絵のタッチを手がかりに、作者の気配を追う。", "discovery": "作者のサイン入り小石", "tags": ["赤い", "小さい"]},
+    "A04_TAIYAKI": {"axis": "foodie", "label": "頭から尾まで食べ方を真剣に決める", "description": "焼きたてを手に、最初の一口の場所を真剣に悩む。", "discovery": "たい焼き占いの結果メモ", "tags": ["甘い", "いい匂い", "温かい"]},
+    "A05_SHRINE": {"axis": "chill", "label": "狛犬の前で目を閉じて座る", "description": "木陰でしばらく目を閉じて、境内の音だけ聞く。", "discovery": "境内の音の録音メモ", "tags": ["古い", "小さい"]},
+    "E01_FOUNTAIN": {"axis": "curiosity", "label": "虹の根元を探しに近づく", "description": "濡れる覚悟で、虹が立っている場所へ近づく。", "discovery": "虹の根元の水しぶき写真", "tags": ["光", "まるい", "冷たい", "小さい"]},
     "E02_BUSKER": {"axis": "friendly", "label": "拍手と投げ銭で応援する", "description": "曲が終わったら一番に拍手して、気持ちを置く。", "discovery": "弾き語りのセットリスト", "tags": ["音楽"]},
     "E03_SUNSET": {"axis": "adventure", "label": "一番高い屋根の鳥と目が合うまで待つ", "description": "登った先で、鳥と目が合うまで静かに待つ。", "discovery": "落ちていた小さな羽根", "tags": ["赤い", "光"]},
-    "E04_DAGASHI": {"axis": "foodie", "label": "ラムネのビー玉を取り出してみる", "description": "飲み終わった瓶のビー玉を、割らずに取り出す挑戦。", "discovery": "取り出したビー玉", "tags": ["まるい", "光"]},
+    "E04_DAGASHI": {"axis": "foodie", "label": "ラムネのビー玉を取り出してみる", "description": "飲み終わった瓶のビー玉を、割らずに取り出す挑戦。", "discovery": "取り出したビー玉", "tags": ["まるい", "光", "冷たい"]},
     "E05_WINDOWS": {"axis": "friendly", "label": "窓明かりに向かって手を振る", "description": "誰かが見ているかもしれない窓へ、小さく手を振る。", "discovery": "窓越しの会釈の思い出", "tags": ["光"]},
-    "F01_CAFE": {"axis": "foodie", "label": "プリンも頼んで、口ずさみながら食べる（欲張りセット）", "description": "固めプリンを食べながら、流れる曲を小さく口ずさむ。", "discovery": "窓際の席の常連認定カード", "tags": ["音楽", "甘い"]},
+    "F01_CAFE": {"axis": "foodie", "label": "プリンも頼んで、口ずさみながら食べる（欲張りセット）", "description": "固めプリンを食べながら、流れる曲を小さく口ずさむ。", "discovery": "窓際の席の常連認定カード", "tags": ["音楽", "甘い", "温かい"]},
     "S01_HOSHI": {"axis": "friendly", "label": "遠くの誰かも数えてると信じて、一緒に数える", "description": "姿は見えなくても、同じ空の下で数えている誰かを思って数える。", "discovery": "誰かとお揃いの一番星メモ", "tags": ["星", "光"]},
     "Q01_START": {"axis": "curiosity", "label": "刺繍のイニシャルを手帳に書き留めて預かる", "description": "持ち主の手がかりを手帳に残してから、丁寧に預かる。", "discovery": "刺繍のイニシャルメモと預かったハンカチ", "tags": ["古い"]},
     "Q02_END": {"axis": "friendly", "label": "届けた後、おまわりさんと街の話をする", "description": "届け終えて、少しだけこの街の話を聞かせてもらう。", "discovery": "おまわりさんの街案内メモ", "tags": ["花"]},
@@ -200,7 +200,7 @@ Q_MSG_START = _quest("Q05_START", "alley", "【小さな頼まれごと】豆腐
         {"key": "B", "axis": "foodie", "label": "ついでに豆腐の話を聞いてから預かる", "description": "今日のお豆腐の話を聞いて、伝言と一緒に覚える。"}], "start")
 Q_MSG_END = _quest("Q06_END", "evening", "【小さな頼まれごと】銭湯の番台さんへ", "foodie",
     "夕方の銭湯前。番台さんに声をかけると、湯気の匂いと一緒に「はいはい」と笑顔が返ってきた。預かった伝言を思い出す。",
-    "銭湯前の夕方のメモ", ["匂い"], [
+    "銭湯前の夕方のメモ", ["匂い", "温かい"], [
         {"key": "A", "axis": "friendly", "label": "伝言を正確に伝える", "description": "『今日は木綿が多め』、一言一句そのまま伝える。"},
         {"key": "B", "axis": "foodie", "label": "銭湯上がりの牛乳の話を聞く", "description": "伝言のついでに、湯上がりの牛乳の話を聞いてしまう。"}],
     "end", complete="お礼の湯上がり牛乳メモ")
@@ -285,10 +285,36 @@ def out(obj, code=0):
     sys.exit(code)
 
 
+# お題の言葉から「ニュアンスの近いタグ」へ広げる小さな辞書。
+# 自由入力のお題を、街の在庫（タグ）にゆるく橋渡しするためのもの。
+# 完全な意味理解ではなく、代表的な言葉だけを受ける割り切りでよい。
+THEME_NUANCE = {
+    "冬": ["温かい", "寒い"],
+    "雪": ["冷たい", "温かい"],
+    "寒い": ["温かい", "冷たい"],
+    "夏": ["冷たい", "涼しい"],
+    "暑い": ["冷たい"],
+    "可愛い": ["可愛い", "小さい", "猫"],
+    "かわいい": ["可愛い", "小さい", "猫"],
+    "きれい": ["光", "花"],
+    "綺麗": ["光", "花"],
+    "美しい": ["光", "花"],
+    "おいしい": ["甘い", "いい匂い"],
+    "美味しい": ["甘い", "いい匂い"],
+    "あたたかい": ["温かい"],
+}
+
+
 def theme_hit(theme, tags):
     if not theme:
         return False
-    return any(t in theme or theme in t for t in tags)
+    if any(t in theme or theme in t for t in tags):
+        return True
+    for key, extra in THEME_NUANCE.items():
+        if key in theme:
+            if any(e in tags for e in extra):
+                return True
+    return False
 
 
 def cmd_new(args):
@@ -420,19 +446,19 @@ def cmd_comment(args):
 
 
 def pick_postcard_spot(log):
-    done = [e for e in log if e.get("quest_completed")]
-    if done:
-        return done[0]  # ミニ物語が閉じた場面は、その日の山場として最優先
-    hits = [e for e in log if e.get("theme_hit")]
-    if hits:
-        return max(hits, key=lambda e: RANK_ORDER[e["final_rank"]])
-    crits = [e for e in log if e["final_rank"] == "critical"]
-    if crits:
-        return crits[0]
-    succ = [e for e in log if e["final_rank"] in ("success", "critical")]
-    if succ:
-        return succ[0]
-    return log[-1] if log else None
+    # その日の「一番の場面」を選ぶ。頼まれごとの完了は強い候補だが絶対ではない:
+    # お題発見 > 判定の良さ > 物語が閉じたか、の順に比べ、同点なら早い場面。
+    def score(e):
+        return (1 if e.get("theme_hit") else 0,
+                RANK_ORDER[e["final_rank"]],
+                1 if e.get("quest_completed") else 0)
+    best = None
+    for e in log:
+        if e.get("discovery") is None and not e.get("quest_completed"):
+            continue
+        if best is None or score(e) > score(best):
+            best = e
+    return best if best is not None else (log[-1] if log else None)
 
 
 def cmd_finish(args):
