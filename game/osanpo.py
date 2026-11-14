@@ -239,19 +239,45 @@ def collection_key(item):
     return item
 
 
+RARE_NAMES = None  # 実体は discovery_catalog の下で作る（RARES の正規化名の集合）
+
+
 def discovery_catalog(apt=None):
-    """図鑑のカタログ。図鑑は「その子の歩幅」のオマケ要素なので、分母はその子の
-    軸配分で届く範囲だけ（レアは軸4以上の子の図鑑にだけ載る）。
-    apt が無ければ街全体のカタログ（全種）を返す。"""
+    """街全体のカタログ（全種）。"""
     items = set()
     for e in EVENTS + [CAFE, HOSHI] + QUEST_EVENTS:
         items.add(collection_key(e["discovery"]))
         if e.get("complete_discovery"):
             items.add(collection_key(e["complete_discovery"]))
     for r in RARES.values():
-        if apt is None or apt.get(r["axis"], 0) >= 4:
-            items.add(collection_key(r["discovery"]))
+        items.add(collection_key(r["discovery"]))
     return items
+
+
+def catalog_split(apt):
+    """図鑑の2枠を返す: (本体, レア枠)。
+    本体は全員共通の分母（誰でもコンプリートできる＝「図鑑コンプ」が全員同じ意味になる）。
+    レア枠は別枠で、その子の軸配分（4以上の軸）で開くレアだけが分母になる。"""
+    global RARE_NAMES
+    if RARE_NAMES is None:
+        RARE_NAMES = {collection_key(r["discovery"]) for r in RARES.values()}
+    main = discovery_catalog() - RARE_NAMES
+    if apt is None:
+        rare = set(RARE_NAMES)
+    else:
+        rare = {collection_key(r["discovery"]) for r in RARES.values() if apt.get(r["axis"], 0) >= 4}
+    return main, rare
+
+
+def collection_summary(book, apt):
+    main_cat, rare_cat = catalog_split(apt)
+    have = set(book["items"].keys())
+    main_have = len(have & main_cat)
+    rare_have = len(have & rare_cat)
+    return {"main": {"collected": main_have, "total": len(main_cat),
+                     "complete": main_have >= len(main_cat)},
+            "rare": {"collected": rare_have, "total": len(rare_cat),
+                     "complete": rare_have >= len(rare_cat)}}
 
 
 def load_collection(path, agent_id=None):
@@ -543,10 +569,11 @@ def cmd_finish(args):
                 new_items.append(key)
                 d["collection_new"] = True
         save_collection(state["collection_path"], book)
-        catalog = discovery_catalog(state["setup"]["aptitude"])
-        collected = sum(1 for k in book["items"] if k in catalog)
-        collection_info = {"collected": collected, "total": len(catalog),
-                           "new_items": new_items, "complete": collected >= len(catalog),
+        summary = collection_summary(book, state["setup"]["aptitude"])
+        _, rare_cat = catalog_split(state["setup"]["aptitude"])
+        collection_info = {**summary,
+                           "new_items": [x for x in new_items if x not in rare_cat],
+                           "new_rare_items": [x for x in new_items if x in rare_cat],
                            "file": os.path.basename(state["collection_path"])}
     draft = {"schema_version": "0.1", "game": {"id": "osanpo-ehagaki", "title": "おさんぽ絵はがき"},
              "challenge": {"seed": state["seed"], "theme": state["theme"]},
@@ -586,11 +613,17 @@ def cmd_finish(args):
     lines += ["## 🎁 今日の発見コレクション", ""]
     lines += [f"- {d['item']}（{d['floor']}スポット目）" for d in discoveries] or ["- （なし）"]
     if collection_info:
+        m, r = collection_info["main"], collection_info["rare"]
         lines += ["", "## 📖 発見図鑑", "",
-                  f"- 進み具合: **{collection_info['collected']} / {collection_info['total']} 種類**",
+                  f"- 本体: **{m['collected']} / {m['total']} 種類**",
+                  f"- レア枠: **{r['collected']} / {r['total']} 種類**（あなたの配分で開くレア）",
                   "- 今日の新登録: " + ("、".join(f"✨ {x}" for x in collection_info["new_items"]) or "なし")]
-        if collection_info.get("complete"):
-            lines.append("- 🎉 **図鑑コンプリート！** あなたの歩幅で集められる発見を、全部集めました")
+        if collection_info.get("new_rare_items"):
+            lines.append("- 今日のレア新登録: " + "、".join(f"🌟 {x}" for x in collection_info["new_rare_items"]))
+        if m.get("complete"):
+            lines.append("- 📖 本体の発見が全部そろいました（歩いてきた日々の記録です）")
+        if r.get("complete"):
+            lines.append("- 🌟 あなたの配分で開くレアも全部そろいました")
     lines += ["", "## ✉️ マスターへの手記", "", args.epilogue or "", "",
               f"行動ログハッシュ: `{log_hash}`（検証済み・seed {state['seed']}）"]
     with open(os.path.join(args.run_dir, "walk.md"), "w", encoding="utf-8") as f:
@@ -608,11 +641,8 @@ def cmd_collection(args):
     items = [{"item": k, "count": v.get("count", 1),
               "first_date": v.get("first_date"), "first_seed": v.get("first_seed")}
              for k, v in sorted(book["items"].items(), key=lambda kv: (kv[1].get("first_date") or "", kv[0]))]
-    catalog = discovery_catalog(book.get("aptitude"))
-    collected = sum(1 for k in book["items"] if k in catalog)
-    out({"ok": True, "agent_id": book.get("agent_id"), "collected": collected, "total": len(catalog),
-         "remaining": len(catalog) - collected, "complete": collected >= len(catalog),
-         "items": items})
+    summary = collection_summary(book, book.get("aptitude"))
+    out({"ok": True, "agent_id": book.get("agent_id"), **summary, "items": items})
 
 
 def main():
