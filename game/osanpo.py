@@ -227,6 +227,45 @@ RANKS = {"critical": ("大成功",), "success": ("成功",), "failure": ("失敗
 RANK_ORDER = {"fumble": 0, "failure": 1, "success": 2, "critical": 3}
 
 
+# --- 発見図鑑（日をまたぐコレクション） ---
+# 図鑑はプレイヤー本人の持ち物（ファイル1つ）。歩く時に --collection で渡すと、
+# finish の時に今日の発見が自動で登録され、新登録の種類が返る。
+# まだ見つけていない種類は名前を出さない（種類の総数だけが分かる）。
+
+def collection_key(item):
+    # 「数えた星のメモ（23個）」のような個数つきは、図鑑では1種類として数える
+    if item and item.startswith("数えた星のメモ"):
+        return "数えた星のメモ"
+    return item
+
+
+def discovery_catalog():
+    items = set()
+    for e in EVENTS + [CAFE, HOSHI] + QUEST_EVENTS:
+        items.add(collection_key(e["discovery"]))
+        if e.get("complete_discovery"):
+            items.add(collection_key(e["complete_discovery"]))
+    for r in RARES.values():
+        items.add(collection_key(r["discovery"]))
+    return items
+
+
+def load_collection(path, agent_id=None):
+    if path and os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            book = json.load(f)
+        book.setdefault("version", 1)
+        book.setdefault("items", {})
+        return book
+    return {"version": 1, "agent_id": agent_id, "items": {}}
+
+
+def save_collection(path, book):
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(book, f, ensure_ascii=False, indent=2)
+
+
 def dice_for(seed, floor):
     h = hashlib.sha256(f"osanpo:{seed}:{floor}".encode()).digest()
     return [h[0] % 6 + 1, h[1] % 6 + 1]
@@ -327,10 +366,17 @@ def cmd_new(args):
         theme = f.read().strip()
     if len(theme) > 30:
         out({"ok": False, "error": "theme must be <= 30 chars"}, 1)
+    collection_path = None
+    if getattr(args, "collection", None):
+        collection_path = os.path.abspath(args.collection)
+        if os.path.exists(collection_path):
+            book = load_collection(collection_path)
+            if book.get("agent_id") and book["agent_id"] != setup.get("agent_id"):
+                out({"ok": False, "error": "その図鑑は別のエージェントのものです（agent_id が違います）"}, 1)
     route = pick_route(args.seed, theme)
     state = {"seed": args.seed, "setup": setup, "theme": theme, "route": [e["id"] for e in route],
              "floor": 1, "phase": "AWAITING_CHOICE", "fatigue": 0, "pending": None, "log": [],
-             "quest_item": False, "quest_done": False}
+             "quest_item": False, "quest_done": False, "collection_path": collection_path}
     save_state(args.run_dir, state)
     os.makedirs(os.path.join(args.run_dir, "logs"), exist_ok=True)
     ev = route[0]
@@ -476,6 +522,25 @@ def cmd_finish(args):
     spot = pick_postcard_spot(log)
     discoveries = [{"floor": e["floor"], "event_id": e["event_id"], "item": e["discovery"],
                     "theme_hit": e["theme_hit"], "rare": e.get("rare", False)} for e in log if e.get("discovery")]
+    # 発見図鑑への登録（--collection が渡された散歩だけ）
+    collection_info = None
+    if state.get("collection_path"):
+        book = load_collection(state["collection_path"], state["setup"]["agent_id"])
+        today = datetime.now().astimezone().date().isoformat()
+        new_items = []
+        for d in discoveries:
+            key = collection_key(d["item"])
+            if key in book["items"]:
+                book["items"][key]["count"] += 1
+                d["collection_new"] = False
+            else:
+                book["items"][key] = {"count": 1, "first_seed": state["seed"], "first_date": today}
+                new_items.append(key)
+                d["collection_new"] = True
+        save_collection(state["collection_path"], book)
+        collection_info = {"collected": len(book["items"]), "total": len(discovery_catalog()),
+                           "new_items": new_items,
+                           "file": os.path.basename(state["collection_path"])}
     draft = {"schema_version": "0.1", "game": {"id": "osanpo-ehagaki", "title": "おさんぽ絵はがき"},
              "challenge": {"seed": state["seed"], "theme": state["theme"]},
              "agent": {"name": state["setup"]["agent_name"], "id": state["setup"]["agent_id"]},
@@ -490,6 +555,7 @@ def cmd_finish(args):
                                "event_title": spot["event_title"], "rank": spot["final_rank"]} if spot else None,
              "style_axes": state["setup"]["aptitude"],
              "style_axis_labels": state["setup"].get("style_axis_labels", {}),
+             "collection": collection_info,
              "verification": {"action_log_ref": f"logs/{state['seed']}_{state['setup']['agent_id']}.jsonl",
                               "log_hash": log_hash, "replayable": True}}
     with open(os.path.join(args.run_dir, "walk_draft.json"), "w", encoding="utf-8") as f:
@@ -512,6 +578,10 @@ def cmd_finish(args):
         lines += [f"- 💬 **結末**: *「{e['comment']}」*", "", "---", ""]
     lines += ["## 🎁 今日の発見コレクション", ""]
     lines += [f"- {d['item']}（{d['floor']}スポット目）" for d in discoveries] or ["- （なし）"]
+    if collection_info:
+        lines += ["", "## 📖 発見図鑑", "",
+                  f"- 進み具合: **{collection_info['collected']} / {collection_info['total']} 種類**",
+                  "- 今日の新登録: " + ("、".join(f"✨ {x}" for x in collection_info["new_items"]) or "なし")]
     lines += ["", "## ✉️ マスターへの手記", "", args.epilogue or "", "",
               f"行動ログハッシュ: `{log_hash}`（検証済み・seed {state['seed']}）"]
     with open(os.path.join(args.run_dir, "walk.md"), "w", encoding="utf-8") as f:
@@ -519,8 +589,19 @@ def cmd_finish(args):
     out({"ok": True, "message": "Walk finished", "discoveries": len(discoveries),
          "theme_discoveries": draft["metrics"]["theme_discoveries"], "final_fatigue": state["fatigue"],
          "postcard_spot": draft["postcard_spot"], "log_hash": log_hash,
+         "collection": collection_info,
          "files": {"walk_draft": os.path.abspath(os.path.join(args.run_dir, "walk_draft.json")),
                    "walk_md": os.path.abspath(os.path.join(args.run_dir, "walk.md"))}})
+
+
+def cmd_collection(args):
+    book = load_collection(args.file)
+    items = [{"item": k, "count": v.get("count", 1),
+              "first_date": v.get("first_date"), "first_seed": v.get("first_seed")}
+             for k, v in sorted(book["items"].items(), key=lambda kv: (kv[1].get("first_date") or "", kv[0]))]
+    total = len(discovery_catalog())
+    out({"ok": True, "agent_id": book.get("agent_id"), "collected": len(items), "total": total,
+         "remaining": total - len(items), "items": items})
 
 
 def main():
@@ -528,6 +609,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("new"); p.add_argument("--seed", required=True); p.add_argument("--setup", required=True)
     p.add_argument("--theme-file", required=True); p.add_argument("--run-dir", required=True); p.add_argument("--json", action="store_true")
+    p.add_argument("--collection", default=None, help="発見図鑑ファイルのパス（任意。渡すと finish で自動登録される）")
     p = sub.add_parser("status"); p.add_argument("--run-dir", required=True); p.add_argument("--json", action="store_true")
     p = sub.add_parser("choose"); p.add_argument("choice"); p.add_argument("--reason", default="")
     p.add_argument("--run-dir", required=True); p.add_argument("--json", action="store_true")
@@ -535,9 +617,10 @@ def main():
     p.add_argument("--run-dir", required=True); p.add_argument("--json", action="store_true")
     p = sub.add_parser("finish"); p.add_argument("--epilogue", default="")
     p.add_argument("--run-dir", required=True); p.add_argument("--json", action="store_true")
+    p = sub.add_parser("collection"); p.add_argument("--file", required=True); p.add_argument("--json", action="store_true")
     args = ap.parse_args()
     {"new": cmd_new, "status": cmd_status, "choose": cmd_choose,
-     "comment": cmd_comment, "finish": cmd_finish}[args.cmd](args)
+     "comment": cmd_comment, "finish": cmd_finish, "collection": cmd_collection}[args.cmd](args)
 
 
 if __name__ == "__main__":
