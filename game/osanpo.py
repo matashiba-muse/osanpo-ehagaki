@@ -239,14 +239,18 @@ def collection_key(item):
     return item
 
 
-def discovery_catalog():
+def discovery_catalog(apt=None):
+    """図鑑のカタログ。図鑑は「その子の歩幅」のオマケ要素なので、分母はその子の
+    軸配分で届く範囲だけ（レアは軸4以上の子の図鑑にだけ載る）。
+    apt が無ければ街全体のカタログ（全種）を返す。"""
     items = set()
     for e in EVENTS + [CAFE, HOSHI] + QUEST_EVENTS:
         items.add(collection_key(e["discovery"]))
         if e.get("complete_discovery"):
             items.add(collection_key(e["complete_discovery"]))
     for r in RARES.values():
-        items.add(collection_key(r["discovery"]))
+        if apt is None or apt.get(r["axis"], 0) >= 4:
+            items.add(collection_key(r["discovery"]))
     return items
 
 
@@ -526,6 +530,7 @@ def cmd_finish(args):
     collection_info = None
     if state.get("collection_path"):
         book = load_collection(state["collection_path"], state["setup"]["agent_id"])
+        book["aptitude"] = state["setup"]["aptitude"]  # その子の歩幅（分母の基準）を控える
         today = datetime.now().astimezone().date().isoformat()
         new_items = []
         for d in discoveries:
@@ -538,8 +543,10 @@ def cmd_finish(args):
                 new_items.append(key)
                 d["collection_new"] = True
         save_collection(state["collection_path"], book)
-        collection_info = {"collected": len(book["items"]), "total": len(discovery_catalog()),
-                           "new_items": new_items,
+        catalog = discovery_catalog(state["setup"]["aptitude"])
+        collected = sum(1 for k in book["items"] if k in catalog)
+        collection_info = {"collected": collected, "total": len(catalog),
+                           "new_items": new_items, "complete": collected >= len(catalog),
                            "file": os.path.basename(state["collection_path"])}
     draft = {"schema_version": "0.1", "game": {"id": "osanpo-ehagaki", "title": "おさんぽ絵はがき"},
              "challenge": {"seed": state["seed"], "theme": state["theme"]},
@@ -582,6 +589,8 @@ def cmd_finish(args):
         lines += ["", "## 📖 発見図鑑", "",
                   f"- 進み具合: **{collection_info['collected']} / {collection_info['total']} 種類**",
                   "- 今日の新登録: " + ("、".join(f"✨ {x}" for x in collection_info["new_items"]) or "なし")]
+        if collection_info.get("complete"):
+            lines.append("- 🎉 **図鑑コンプリート！** あなたの歩幅で集められる発見を、全部集めました")
     lines += ["", "## ✉️ マスターへの手記", "", args.epilogue or "", "",
               f"行動ログハッシュ: `{log_hash}`（検証済み・seed {state['seed']}）"]
     with open(os.path.join(args.run_dir, "walk.md"), "w", encoding="utf-8") as f:
@@ -599,9 +608,11 @@ def cmd_collection(args):
     items = [{"item": k, "count": v.get("count", 1),
               "first_date": v.get("first_date"), "first_seed": v.get("first_seed")}
              for k, v in sorted(book["items"].items(), key=lambda kv: (kv[1].get("first_date") or "", kv[0]))]
-    total = len(discovery_catalog())
-    out({"ok": True, "agent_id": book.get("agent_id"), "collected": len(items), "total": total,
-         "remaining": total - len(items), "items": items})
+    catalog = discovery_catalog(book.get("aptitude"))
+    collected = sum(1 for k in book["items"] if k in catalog)
+    out({"ok": True, "agent_id": book.get("agent_id"), "collected": collected, "total": len(catalog),
+         "remaining": len(catalog) - collected, "complete": collected >= len(catalog),
+         "items": items})
 
 
 def main():
