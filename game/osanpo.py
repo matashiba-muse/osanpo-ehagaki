@@ -637,6 +637,43 @@ def cmd_finish(args):
 
 
 def cmd_collection(args):
+    if getattr(args, "add_run", None):
+        # 図鑑ができる前に歩いた散歩の後付け登録。記録（state.json）が残っている
+        # run フォルダから、その日の発見を図鑑へ写す。同じ run の二重登録はしない。
+        run_dir = args.add_run
+        try:
+            with open(os.path.join(run_dir, "state.json"), encoding="utf-8") as f:
+                st = json.load(f)
+        except Exception:
+            out({"ok": False, "error": f"run の記録が読めません: {run_dir}"}); return
+        if st.get("phase") != "FINISHED":
+            out({"ok": False, "error": "まだ終わっていない散歩は登録できません"}); return
+        agent_id = st["setup"]["agent_id"]
+        book = load_collection(args.file, agent_id)
+        imported = book.setdefault("imported_seeds", [])
+        if st["seed"] in imported:
+            out({"ok": True, "skipped": True, "reason": "この散歩は登録済みです", "seed": st["seed"]}); return
+        try:
+            mtime = os.path.getmtime(os.path.join(run_dir, "state.json"))
+            walk_date = datetime.fromtimestamp(mtime).astimezone().date().isoformat()
+        except Exception:
+            walk_date = datetime.now().astimezone().date().isoformat()
+        added = []
+        for e in st["log"]:
+            if not e.get("discovery"):
+                continue
+            key = collection_key(e["discovery"])
+            if key in book["items"]:
+                continue
+            book["items"][key] = {"count": 1, "first_seed": st["seed"], "first_date": walk_date}
+            added.append(key)
+        if not book.get("aptitude"):
+            book["aptitude"] = st["setup"].get("aptitude")
+        imported.append(st["seed"])
+        save_collection(args.file, book)
+        summary = collection_summary(book, book.get("aptitude"))
+        out({"ok": True, "added": added, "seed": st["seed"], "date": walk_date, **summary})
+        return
     book = load_collection(args.file)
     items = [{"item": k, "count": v.get("count", 1),
               "first_date": v.get("first_date"), "first_seed": v.get("first_seed")}
@@ -659,6 +696,7 @@ def main():
     p = sub.add_parser("finish"); p.add_argument("--epilogue", default="")
     p.add_argument("--run-dir", required=True); p.add_argument("--json", action="store_true")
     p = sub.add_parser("collection"); p.add_argument("--file", required=True); p.add_argument("--json", action="store_true")
+    p.add_argument("--add-run", default=None, help="図鑑ができる前の散歩を、記録フォルダから後付け登録する")
     args = ap.parse_args()
     {"new": cmd_new, "status": cmd_status, "choose": cmd_choose,
      "comment": cmd_comment, "finish": cmd_finish, "collection": cmd_collection}[args.cmd](args)
